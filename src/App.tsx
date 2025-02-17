@@ -211,6 +211,15 @@ function App() {
             universalLink: "https://t.me/UXUYbot?attach=wallet",
             bridgeUrl: "https://bridge.uxuy.me/bridge",
             platforms: ["ios", "android", "macos", "windows", "linux"]
+          },
+          {
+            appName: 'Tonkeeper',
+            name: 'TonkeeperWeb',
+            imageUrl: 'https://raw.githubusercontent.com/tonkeeper/tonkeeper-web/0f197474c57937787608697e794ef2b20a62f0d4/apps/twa/public/logo-128x128.png',
+            aboutUrl: 'https://6b1b912a.tonkeeper-web.pages.dev/',
+            universalLink: 'https://6b1b912a.tonkeeper-web.pages.dev/ton-connect',
+            bridgeUrl: "https://bridge.tonapi.io/bridge",
+            platforms: ["ios", "android", "macos", "windows", "linux"]
           }
         ]
       }}
