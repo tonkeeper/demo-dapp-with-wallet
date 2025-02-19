@@ -195,12 +195,12 @@ function App() {
             platforms: ['chrome']
           },
           {
-            appName: "architec.ton",
+            appName: "Architec.ton",
             name: "Architec.ton",
             imageUrl: "https://raw.githubusercontent.com/Architec-Ton/wallet-tma/refs/heads/dev/public/images/arcwallet_logo.png",
             aboutUrl: "https://architecton.tech",
             universalLink: "https://t.me/architec_ton_bot?attach=wallet",
-            bridgeUrl: "https://tonconnect.architecton.site/bridge",
+            bridgeUrl: "https://tc.architecton.su/bridge",
             platforms: ["ios", "android", "macos", "windows", "linux"]
           },
           {
@@ -211,6 +211,17 @@ function App() {
             universalLink: "https://t.me/UXUYbot?attach=wallet",
             bridgeUrl: "https://bridge.uxuy.me/bridge",
             platforms: ["ios", "android", "macos", "windows", "linux"]
+          },
+          {
+            appName: "tonflow",
+            name: "TONFLOW",
+            imageUrl: "https://tonflow.app/assets/images/tonflow_ico_256.png",
+            aboutUrl: "https://tonflow.app",
+            universalLink: "https://tonflow.app/ton-connect",
+            deepLink: "tonflow-tc://",
+            bridgeUrl: "https://bridge.tonapi.io/bridge",
+            jsBridgeKey: "tonflow",
+            platforms: ["windows", "linux", "macos", "chrome"]
           },
           {
             appName: 'Tonkeeper',
