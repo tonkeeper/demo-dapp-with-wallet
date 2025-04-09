@@ -1,4 +1,4 @@
-import {BorderRadius, Locales, ReturnStrategy, Theme, THEME, useTonConnectUI, WalletInfo} from "@tonconnect/ui-react";
+import {BorderRadius, Locales, ReturnStrategy, Theme, THEME, useTonConnectUI} from "@tonconnect/ui-react";
 import './footer.scss';
 import {useEffect, useState} from "react";
 import {ColorsModal} from "./ColorsModal/ColorsModal";
@@ -12,17 +12,12 @@ export const Footer = () => {
 
     const [returnStrategy, setReturnStrategy] = useState('back');
     const [skipRedirect, setSkipRedirect] = useState('ios');
-    const [wallets, setWallets] = useState<WalletInfo[]>([]);
 
-    const [tonConnectUI, setOptions] = useTonConnectUI();
+    const [_, setOptions] = useTonConnectUI();
 
     const onLangChange = (lang: string) => {
         setOptions({language: lang as Locales})
     }
-
-    const onPrimaryChange = (value: string) => {
-        setOptions({ primaryWalletAppName: value })
-    };
 
     const onThemeChange = (theme: string) => {
         setOptions({uiPreferences: {theme: theme as Theme}})
@@ -64,24 +59,7 @@ export const Footer = () => {
         setOptions({ actionsConfiguration: { modals, notifications } })
     }, [checkboxes])
 
-    useEffect(() => {
-        tonConnectUI.getWallets().then(setWallets)
-    }, [])
-
     return <footer className="footer">
-        <div>
-            <label>primary wallet</label>
-            <select onChange={e => onPrimaryChange(e.target.value)}>
-                <option value="unset">unset</option>
-                <option value="disabled">disabled</option>
-                {wallets.map((wallet) => (
-                    <option key={wallet.appName} value={wallet.appName}>
-                        {wallet.name}
-                    </option>
-                ))}
-            </select>
-        </div>
-
         <div>
             <label>language</label>
             <select onChange={e => onLangChange(e.target.value)}>
