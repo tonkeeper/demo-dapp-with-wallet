@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@ton/core": "^0.60.1",
-    "@tonconnect/ui-react": "npm:@tonkeeper/tonconnect-react@2.2.0-beta.3",
+    "@tonconnect/ui-react": "npm:@tonkeeper/tonconnect-react@2.3.0-alpha.0",
     "crc-32": "^1.2.2",
     "crypto-browserify": "^3.12.1",
     "eruda": "^2.11.2",
