@@ -17,6 +17,7 @@ export const Footer = () => {
     // Состояния для features
     const [useSendTransaction, setUseSendTransaction] = useState(false);
     const [useSignData, setUseSignData] = useState(false);
+    const [useSubscription, setUseSubscription] = useState(false);
     const [useExtraCurrencyRequired, setUseExtraCurrencyRequired] = useState(false);
     const [useMinMessages, setUseMinMessages] = useState(false);
     const [extraCurrencyRequired, setExtraCurrencyRequired] = useState(false);
@@ -83,7 +84,12 @@ export const Footer = () => {
                 signData: {
                     types: selectedSignDataTypes
                 }
-            })
+            }),
+            ...(useSubscription && {
+                subscription: {
+                    versions: { v2: true }
+                }
+            }),
         };
 
         if (Object.keys(featuresConfig).length === 0) {
@@ -118,7 +124,8 @@ export const Footer = () => {
         useMinMessages,
         extraCurrencyRequired,
         minMessages,
-        selectedSignDataTypes
+        selectedSignDataTypes,
+        useSubscription
     ]);
 
     return <footer className="footer">
@@ -299,6 +306,16 @@ export const Footer = () => {
                                 ))}
                             </div>
                         )}
+                    </div>
+                    <div style={{ marginTop: 8 }}>
+                        <label style={{ marginRight: 8 }}>
+                            <input
+                                type="checkbox"
+                                checked={useSubscription}
+                                onChange={e => setUseSubscription(e.target.checked)}
+                            />
+                            subscription
+                        </label>
                     </div>
                 </div>
             )}

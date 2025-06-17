@@ -10,11 +10,15 @@ import { Header } from './components/Header/Header';
 import { TxForm } from './components/TxForm/TxForm';
 import { ConnectionButton } from './components/ConnectionButton/ConnectionButton';
 import { SignDataForm } from './components/SignDataForm/SignDataForm';
+import { SubscriptionForm } from './components/SubscriptionForm/SubscriptionForm';
 
 const walletsRequiredFeatures: RequiredFeatures = {
     sendTransaction: {
         extraCurrencyRequired: true,
-        minMessages: 5
+        minMessages: 10
+    },
+    subscription: {
+      versions: { v2: true },
     },
     // signData: {
     //     types: ['text', 'binary', 'cell']
@@ -37,6 +41,7 @@ function App() {
         <TxForm/>
         {/*<TonProofDemo />*/}
         <SignDataForm/>
+        <SubscriptionForm/>
         <ConnectionButton/>
         <Footer/>
       </div>
