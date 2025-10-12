@@ -12,6 +12,11 @@
   }
 }
 
+/* Request features reuse footer-checkbox-container; ensure its labels/selects are white */
+.footer-checkbox-container label {
+  color: white;
+}
+
 .footer-checkbox-container {
   display: flex;
   flex-direction: column;
