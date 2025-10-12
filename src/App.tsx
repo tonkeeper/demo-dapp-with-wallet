@@ -15,14 +15,19 @@ import { SubscriptionForm } from './components/SubscriptionForm/SubscriptionForm
 const walletsRequiredFeatures: RequiredFeatures = {
     sendTransaction: {
         extraCurrencyRequired: true,
-        minMessages: 10
+        minMessages: 10,
+        messageVariants: {
+            battery: true,
+            gasless: true,
+            castodial: true,
+        }
     },
-    subscription: {
-      versions: { v2: true },
-    },
-    // signData: {
-    //     types: ['text', 'binary', 'cell']
+    // subscription: {
+    //   versions: { v2: true },
     // },
+    signData: {
+        types: ['text', 'binary', 'cell']
+    },
 };
 
 function App() {
