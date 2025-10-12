@@ -20,8 +20,12 @@ export const Footer = () => {
     const [useSubscription, setUseSubscription] = useState(false);
     const [useExtraCurrencyRequired, setUseExtraCurrencyRequired] = useState(false);
     const [useMinMessages, setUseMinMessages] = useState(false);
+    const [useMessageVariants, setUseMessageVariants] = useState(false);
     const [extraCurrencyRequired, setExtraCurrencyRequired] = useState(false);
     const [minMessages, setMinMessages] = useState(5);
+    const [messageVariantsBattery, setMessageVariantsBattery] = useState(false);
+    const [messageVariantsGasless, setMessageVariantsGasless] = useState(false);
+    const [messageVariantsCastodial, setMessageVariantsCastodial] = useState(false);
     const [selectedSignDataTypes, setSelectedSignDataTypes] = useState<SignDataType[]>([]);
 
     const [_, setOptions] = useTonConnectUI();
@@ -71,9 +75,20 @@ export const Footer = () => {
     };
 
     useEffect(() => {
+        const messageVariantsConfig = useMessageVariants
+            ? {
+                ...(messageVariantsGasless && { gasless: true }),
+                ...(messageVariantsBattery && { battery: true }),
+                ...(messageVariantsCastodial && { castodial: true })
+            }
+            : undefined;
+
         const sendTransactionConfig = {
             ...(useExtraCurrencyRequired && { extraCurrencyRequired }),
-            ...(useMinMessages && { minMessages })
+            ...(useMinMessages && { minMessages }),
+            ...(messageVariantsConfig && Object.keys(messageVariantsConfig).length > 0 && {
+                messageVariants: messageVariantsConfig
+            })
         };
 
         const featuresConfig = {
@@ -124,6 +139,10 @@ export const Footer = () => {
         useMinMessages,
         extraCurrencyRequired,
         minMessages,
+        useMessageVariants,
+        messageVariantsBattery,
+        messageVariantsGasless,
+        messageVariantsCastodial,
         selectedSignDataTypes,
         useSubscription
     ]);
@@ -218,7 +237,7 @@ export const Footer = () => {
             </label>
         </div>
 
-        <div>
+        <div className="footer-checkbox-container">
             <label>Request features:</label>
             <select
                 value={featuresType}
@@ -277,6 +296,44 @@ export const Footer = () => {
                                             onChange={e => setMinMessages(Number(e.target.value))}
                                             style={{ width: 60, marginLeft: 4 }}
                                         />
+                                    )}
+                                </div>
+                                <div style={{ marginTop: 4 }}>
+                                    <label style={{ marginRight: 8 }}>
+                                        <input
+                                            type="checkbox"
+                                            checked={useMessageVariants}
+                                            onChange={e => setUseMessageVariants(e.target.checked)}
+                                        />
+                                        messageVariants
+                                    </label>
+                                    {useMessageVariants && (
+                                        <>
+                                            <label style={{ marginLeft: 8 }}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={messageVariantsBattery}
+                                                    onChange={e => setMessageVariantsBattery(e.target.checked)}
+                                                />
+                                                battery
+                                            </label>
+                                            <label style={{ marginLeft: 8 }}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={messageVariantsGasless}
+                                                    onChange={e => setMessageVariantsGasless(e.target.checked)}
+                                                />
+                                                gasless
+                                            </label>
+                                            <label style={{ marginLeft: 8 }}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={messageVariantsCastodial}
+                                                    onChange={e => setMessageVariantsCastodial(e.target.checked)}
+                                                />
+                                                castodial
+                                            </label>
+                                        </>
                                     )}
                                 </div>
                             </div>

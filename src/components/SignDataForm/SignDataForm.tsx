@@ -76,8 +76,6 @@ export function SignDataForm() {
     return (
         <div className="send-sign-data-form">
             <h3>Configure and sign data</h3>
-            <h4>Data for sign</h4>
-
             <div className="template-buttons">
                 <button onClick={() => loadTemplate(defaultTextData)}>
                     Text
