@@ -1,4 +1,4 @@
-name: Publish docs to GitHub Pages (per-branch, no build)
+name: Publish dist to GitHub Pages (per-branch, no build)
 
 on:
   push:
@@ -28,14 +28,14 @@ jobs:
             | sed -E 's#[/ ]+#-#g; s#[^a-z0-9._-]#-#g; s#-+#-#g; s#(^-|-$)##g')"
           echo "slug=$SLUG" >> $GITHUB_OUTPUT
 
-      - name: Ensure docs exists
+      - name: Ensure dist exists
         run: |
-          if [ ! -d docs ]; then
-            echo "Folder 'docs' not found. Commit your built assets to docs/." >&2
+          if [ ! -d dist ]; then
+            echo "Folder 'dist' not found. Commit your built assets to dist/." >&2
             exit 1
           fi
           # SPA fallback (не билд, просто копия)
-          [ -f docs/index.html ] && cp -f docs/index.html docs/404.html || true
+          [ -f dist/index.html ] && cp -f dist/index.html dist/404.html || true
 
       # main --> корень gh-pages. ВАЖНО: clean=false, чтобы не снести подпапки других веток.
       - name: Deploy main to root
@@ -44,7 +44,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages
-          folder: docs
+          folder: dist
           clean: false   # не чистим весь корень, сохраняем подпапки других веток
 
       # другие ветки --> gh-pages/<branch>
@@ -54,6 +54,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages
-          folder: docs
+          folder: dist
           target-folder: ${{ steps.vars.outputs.slug }}
           clean: true    # чистим ТОЛЬКО свою подпапку
