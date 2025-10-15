@@ -1,3 +1,4 @@
+import './polyfills'
 import './patch-local-storage-for-github-pages';
 
 import React from 'react';
