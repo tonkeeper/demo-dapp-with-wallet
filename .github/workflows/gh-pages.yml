@@ -1,0 +1,65 @@
+name: Deploy to GitHub Pages (per-branch)
+
+on:
+  push:
+    branches:
+      - '**'        # все ветки
+    paths-ignore:
+      - '.github/**'
+      - 'README.md'
+
+jobs:
+  build-and-deploy:
+    if: github.ref_name != 'gh-pages'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # нужно для пуша в gh-pages
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Compute branch slug and base
+        id: vars
+        run: |
+          BRANCH="${GITHUB_REF_NAME}"
+          # Подпапка без слешей: feature/foo -> feature-foo
+          SLUG="${BRANCH//\//-}"
+          echo "slug=$SLUG" >> $GITHUB_OUTPUT
+
+      - name: Install deps & build
+        env:
+          GH_PAGES: "1"
+          BRANCH_NAME: ${{ steps.vars.outputs.slug }}
+        run: |
+          npm ci
+          npm run build
+          # SPA fallback, чтобы работали прямые ссылки
+          cp -f dist/index.html dist/404.html
+
+      # main -> корень gh-pages
+      - name: Deploy (main -> root)
+        if: steps.vars.outputs.slug == 'main'
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: gh-pages
+          folder: dist
+          clean: true   # чистит только целевой каталог (корень), не трогая другие папки
+
+      # другие ветки -> подпапка gh-pages/<branch>
+      - name: Deploy (branch -> subfolder)
+        if: steps.vars.outputs.slug != 'main'
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: gh-pages
+          folder: dist
+          target-folder: ${{ steps.vars.outputs.slug }}
+          clean: true   # чистит только target-folder, а не весь gh-pages
