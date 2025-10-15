@@ -8,6 +8,7 @@ export default defineConfig({
     nodePolyfills({
       globals: {
         Buffer: true,
+        // process: false 
       },
       protocolImports: true,
     }),
@@ -18,8 +19,13 @@ export default defineConfig({
   resolve: {
       alias: {
           crypto: 'crypto-browserify',
+          'vite-plugin-node-polyfills/shims/process': 'process',
+          'node:process': 'process',
+          'vite-plugin-node-polyfills/shims/buffer': 'buffer',
+          'node:buffer': 'buffer',
       },
   },
+  optimizeDeps: { include: ['process', 'buffer'] },
   // @ts-ignore
   base: process.env.GH_PAGES ? '/demo-dapp-with-wallet/' : './',
   server: {
