@@ -1,65 +1,59 @@
-name: Deploy to GitHub Pages (per-branch)
+name: Publish docs to GitHub Pages (per-branch, no build)
 
 on:
   push:
     branches:
       - '**'        # все ветки
-    paths-ignore:
-      - '.github/**'
-      - 'README.md'
+  delete:           # опциональная очистка при удалении веток (см. второй job ниже)
+
+permissions:
+  contents: write
 
 jobs:
-  build-and-deploy:
-    if: github.ref_name != 'gh-pages'
+  publish:
+    if: github.ref_name != 'gh-pages' && github.event_name == 'push'
     runs-on: ubuntu-latest
-    permissions:
-      contents: write   # нужно для пуша в gh-pages
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      - name: Compute branch slug and base
+      - name: Compute branch slug
         id: vars
         run: |
           BRANCH="${GITHUB_REF_NAME}"
-          # Подпапка без слешей: feature/foo -> feature-foo
-          SLUG="${BRANCH//\//-}"
+          # нормализуем: заменяем слеши и пробелы на '-', нижний регистр, фильтруем лишнее
+          SLUG="$(printf '%s' "$BRANCH" \
+            | tr '[:upper:]' '[:lower:]' \
+            | sed -E 's#[/ ]+#-#g; s#[^a-z0-9._-]#-#g; s#-+#-#g; s#(^-|-$)##g')"
           echo "slug=$SLUG" >> $GITHUB_OUTPUT
 
-      - name: Install deps & build
-        env:
-          GH_PAGES: "1"
-          BRANCH_NAME: ${{ steps.vars.outputs.slug }}
+      - name: Ensure docs exists
         run: |
-          npm ci
-          npm run build
-          # SPA fallback, чтобы работали прямые ссылки
-          cp -f dist/index.html dist/404.html
+          if [ ! -d docs ]; then
+            echo "Folder 'docs' not found. Commit your built assets to docs/." >&2
+            exit 1
+          fi
+          # SPA fallback (не билд, просто копия)
+          [ -f docs/index.html ] && cp -f docs/index.html docs/404.html || true
 
-      # main -> корень gh-pages
-      - name: Deploy (main -> root)
+      # main --> корень gh-pages. ВАЖНО: clean=false, чтобы не снести подпапки других веток.
+      - name: Deploy main to root
         if: steps.vars.outputs.slug == 'main'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages
-          folder: dist
-          clean: true   # чистит только целевой каталог (корень), не трогая другие папки
+          folder: docs
+          clean: false   # не чистим весь корень, сохраняем подпапки других веток
 
-      # другие ветки -> подпапка gh-pages/<branch>
-      - name: Deploy (branch -> subfolder)
+      # другие ветки --> gh-pages/<branch>
+      - name: Deploy branch to subfolder
         if: steps.vars.outputs.slug != 'main'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages
-          folder: dist
+          folder: docs
           target-folder: ${{ steps.vars.outputs.slug }}
-          clean: true   # чистит только target-folder, а не весь gh-pages
+          clean: true    # чистим ТОЛЬКО свою подпапку
