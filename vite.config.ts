@@ -17,8 +17,7 @@ export default defineConfig({
     }),
   ],
   build: {
-    // Для Actions удобнее стандартный dist
-    outDir: 'dist',
+    outDir: 'docs',
   },
   resolve: {
     alias: {
