@@ -3,14 +3,14 @@ import './trackers';
 import {
     RequiredFeatures,
     THEME,
-    TonConnectUIProvider,
+    TonConnectUIProvider as TonConnectUIProviderOriginal,
 } from '@tonconnect/ui-react';
 import { Footer } from './components/Footer/Footer';
 import { Header } from './components/Header/Header';
 import { TxForm } from './components/TxForm/TxForm';
 import { ConnectionButton } from './components/ConnectionButton/ConnectionButton';
 import { SignDataForm } from './components/SignDataForm/SignDataForm';
-import { SubscriptionForm } from './components/SubscriptionForm/SubscriptionForm';
+// import { SubscriptionForm } from './components/SubscriptionForm/SubscriptionForm';
 
 const walletsRequiredFeatures: RequiredFeatures = {
     sendTransaction: {
@@ -31,6 +31,7 @@ const walletsRequiredFeatures: RequiredFeatures = {
 };
 
 function App() {
+  const TonConnectUIProvider = TonConnectUIProviderOriginal as any;
   return (
     <TonConnectUIProvider
       manifestUrl="https://tonkeeper.github.io/demo-dapp-with-wallet/tonconnect-manifest.json"
@@ -46,7 +47,7 @@ function App() {
         <TxForm/>
         {/*<TonProofDemo />*/}
         <SignDataForm/>
-        <SubscriptionForm/>
+        {/* <SubscriptionForm/> */}
         <ConnectionButton/>
         <Footer/>
       </div>
