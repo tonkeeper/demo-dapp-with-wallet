@@ -19,7 +19,7 @@ const walletsRequiredFeatures: RequiredFeatures = {
         messageVariants: {
             battery: true,
             gasless: true,
-            castodial: true,
+            custodial: true,
         }
     },
     // subscription: {
