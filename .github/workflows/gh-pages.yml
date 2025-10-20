@@ -34,8 +34,8 @@ jobs:
             exit 1
           fi
 
-      - name: Deploy main to root
-        if: steps.vars.outputs.slug == 'main'
+      - name: Deploy master to root
+        if: steps.vars.outputs.slug == 'master'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -44,7 +44,7 @@ jobs:
           clean: false
 
       - name: Deploy branch to subfolder
-        if: steps.vars.outputs.slug != 'main'
+        if: steps.vars.outputs.slug != 'master'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
