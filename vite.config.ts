@@ -71,8 +71,7 @@ export default defineConfig(({ command }) => {
         output: {
           manualChunks: {
             'vendor-react': ['react', 'react-dom'],
-            'vendor-ton': ['@ton/core', '@tonconnect/ui-react'],
-            'vendor-crypto': ['crypto-browserify', 'tweetnacl', 'buffer', 'process']
+            'vendor-crypto': ['crypto-browserify', 'tweetnacl']
           }
         }
       }
