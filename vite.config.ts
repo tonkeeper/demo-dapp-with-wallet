@@ -66,15 +66,7 @@ export default defineConfig(({ command }) => {
     ].filter(Boolean),
 
     build: {
-      outDir: 'dist',
-      rollupOptions: {
-        output: {
-          manualChunks: {
-            'vendor-react': ['react', 'react-dom'],
-            'vendor-crypto': ['crypto-browserify', 'tweetnacl']
-          }
-        }
-      }
+      outDir: 'dist'
     },
 
     resolve: {
