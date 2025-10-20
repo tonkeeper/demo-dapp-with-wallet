@@ -1,0 +1,54 @@
+name: Publish dist to GitHub Pages (per-branch, no build)
+
+on:
+  push:
+    branches:
+      - '**'
+  delete:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.ref_name != 'gh-pages' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Compute branch slug
+        id: vars
+        run: |
+          BRANCH="${GITHUB_REF_NAME}"
+          SLUG="$(printf '%s' "$BRANCH" \
+            | tr '[:upper:]' '[:lower:]' \
+            | sed -E 's#[/ ]+#-#g; s#[^a-z0-9._-]#-#g; s#-+#-#g; s#(^-|-$)##g')"
+          echo "slug=$SLUG" >> $GITHUB_OUTPUT
+
+      - name: Ensure dist exists
+        run: |
+          if [ ! -d dist ]; then
+            echo "Folder 'dist' not found. Commit your built assets to dist/." >&2
+            exit 1
+          fi
+
+      - name: Deploy master to root
+        if: steps.vars.outputs.slug == 'master'
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: gh-pages
+          folder: dist
+          clean: false
+
+      - name: Deploy branch to subfolder
+        if: steps.vars.outputs.slug != 'master'
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: gh-pages
+          folder: dist
+          target-folder: ${{ steps.vars.outputs.slug }}
+          clean: true
