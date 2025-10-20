@@ -54,7 +54,14 @@ export default defineConfig(({ command }) => {
   return {
     plugins: [
       react(),
-      nodePolyfills({ globals: { Buffer: true }, protocolImports: true }),
+      nodePolyfills({
+        globals: {
+          Buffer: true,
+          global: true,
+          process: true,
+        },
+        protocolImports: true,
+      }),
       isBuild && create404Plugin()
     ].filter(Boolean),
 
@@ -65,7 +72,7 @@ export default defineConfig(({ command }) => {
           manualChunks: {
             'vendor-react': ['react', 'react-dom'],
             'vendor-ton': ['@ton/core', '@tonconnect/ui-react'],
-            'vendor-crypto': ['crypto-browserify', 'tweetnacl', 'buffer']
+            'vendor-crypto': ['crypto-browserify', 'tweetnacl', 'buffer', 'process']
           }
         }
       }
@@ -81,8 +88,6 @@ export default defineConfig(({ command }) => {
       },
     },
 
-    optimizeDeps: { include: ['process', 'buffer'] },
-
     base: isBuild
       ? (branch === 'main'
           ? '/demo-dapp-with-wallet/'
@@ -91,6 +96,8 @@ export default defineConfig(({ command }) => {
 
     server: { fs: { allow: ['../sdk', './'] } },
 
-    define: { __APP_BRANCH__: JSON.stringify(branch) },
+    define: {
+      __APP_BRANCH__: JSON.stringify(branch),
+    },
   }
 })
