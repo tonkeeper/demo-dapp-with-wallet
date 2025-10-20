@@ -62,7 +62,20 @@ export default defineConfig(({ command }) => {
       nodePolyfills({ globals: { Buffer: true }, protocolImports: true }),
       isBuild && create404Plugin()
     ].filter(Boolean),
-    build: { outDir: 'dist' },
+
+    build: {
+      outDir: 'dist',
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor-react': ['react', 'react-dom'],
+            'vendor-ton': ['@ton/core', '@tonconnect/ui-react'],
+            'vendor-crypto': ['crypto-browserify', 'tweetnacl', 'buffer']
+          }
+        }
+      }
+    },
+
     resolve: {
       alias: {
         crypto: 'crypto-browserify',
@@ -72,9 +85,9 @@ export default defineConfig(({ command }) => {
         'node:buffer': 'buffer',
       },
     },
+
     optimizeDeps: { include: ['process', 'buffer'] },
 
-    // dev: '/', build: базовый путь по ветке
     base: isBuild
       ? (branch === 'main'
           ? '/demo-dapp-with-wallet/'
@@ -83,7 +96,6 @@ export default defineConfig(({ command }) => {
 
     server: { fs: { allow: ['../sdk', './'] } },
 
-    // (необязательно) Пробросить имя ветки в клиентский код:
     define: { __APP_BRANCH__: JSON.stringify(branch) },
   }
 })
