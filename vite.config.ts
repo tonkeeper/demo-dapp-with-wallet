@@ -7,16 +7,13 @@ import { copyFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
 function getBranch() {
-  // 1) приоритет у BRANCH_NAME (если передан из CI)
   if (process.env.BRANCH_NAME) return process.env.BRANCH_NAME
 
-  // 2) локально берём из git
   try {
     let name = execSync('git rev-parse --abbrev-ref HEAD', {
       stdio: ['ignore', 'pipe', 'ignore'],
     }).toString().trim()
 
-    // если detached HEAD — подставим короткий SHA
     if (name === 'HEAD') {
       name = execSync('git rev-parse --short HEAD', {
         stdio: ['ignore', 'pipe', 'ignore'],
@@ -24,15 +21,13 @@ function getBranch() {
     }
     return name
   } catch {
-    return 'main' // запасной вариант, если git недоступен
+    return 'main'
   }
 }
 
-// опционально: нормализуем под имя папки на Pages
 const slugify = (s: string) =>
   s.toLowerCase().replace(/[/\s]+/g, '-').replace(/[^a-z0-9._-]/g, '-')
 
-// Плагин для создания 404.html для SPA на GitHub Pages
 function create404Plugin() {
   return {
     name: 'create-404-html',

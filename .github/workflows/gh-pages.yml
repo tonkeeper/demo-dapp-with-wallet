@@ -3,8 +3,8 @@ name: Publish dist to GitHub Pages (per-branch, no build)
 on:
   push:
     branches:
-      - '**'        # все ветки
-  delete:           # опциональная очистка при удалении веток (см. второй job ниже)
+      - '**'
+  delete:
 
 permissions:
   contents: write
@@ -22,7 +22,6 @@ jobs:
         id: vars
         run: |
           BRANCH="${GITHUB_REF_NAME}"
-          # нормализуем: заменяем слеши и пробелы на '-', нижний регистр, фильтруем лишнее
           SLUG="$(printf '%s' "$BRANCH" \
             | tr '[:upper:]' '[:lower:]' \
             | sed -E 's#[/ ]+#-#g; s#[^a-z0-9._-]#-#g; s#-+#-#g; s#(^-|-$)##g')"
@@ -35,7 +34,6 @@ jobs:
             exit 1
           fi
 
-      # main --> корень gh-pages. ВАЖНО: clean=false, чтобы не снести подпапки других веток.
       - name: Deploy main to root
         if: steps.vars.outputs.slug == 'main'
         uses: JamesIves/github-pages-deploy-action@v4
@@ -43,9 +41,8 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages
           folder: dist
-          clean: false   # не чистим весь корень, сохраняем подпапки других веток
+          clean: false
 
-      # другие ветки --> gh-pages/<branch>
       - name: Deploy branch to subfolder
         if: steps.vars.outputs.slug != 'main'
         uses: JamesIves/github-pages-deploy-action@v4
@@ -54,4 +51,4 @@ jobs:
           branch: gh-pages
           folder: dist
           target-folder: ${{ steps.vars.outputs.slug }}
-          clean: true    # чистим ТОЛЬКО свою подпапку
+          clean: true

@@ -6,7 +6,6 @@ import { createRoot } from 'react-dom/client';
 import App from './App';
 import './index.scss';
 
-// Загружаем eruda только в dev режиме
 if (import.meta.env.DEV) {
   import('eruda').then(({ default: eruda }) => {
     eruda.init();

@@ -14,7 +14,6 @@ export const Footer = () => {
     const [skipRedirect, setSkipRedirect] = useState('ios');
     const [featuresType, setFeaturesType] = useState<'none' | 'required' | 'preferred'>('none');
 
-    // Состояния для features
     const [useSendTransaction, setUseSendTransaction] = useState(false);
     const [useSignData, setUseSignData] = useState(false);
     const [useSubscription, setUseSubscription] = useState(false);
