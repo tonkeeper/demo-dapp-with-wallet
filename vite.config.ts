@@ -3,6 +3,8 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { execSync } from 'node:child_process'
+import { copyFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 
 function getBranch() {
   // 1) приоритет у BRANCH_NAME (если передан из CI)
@@ -30,13 +32,36 @@ function getBranch() {
 const slugify = (s: string) =>
   s.toLowerCase().replace(/[/\s]+/g, '-').replace(/[^a-z0-9._-]/g, '-')
 
+// Плагин для создания 404.html для SPA на GitHub Pages
+function create404Plugin() {
+  return {
+    name: 'create-404-html',
+    closeBundle() {
+      const outDir = resolve(__dirname, 'dist')
+      const indexPath = resolve(outDir, 'index.html')
+      const notFoundPath = resolve(outDir, '404.html')
+
+      try {
+        copyFileSync(indexPath, notFoundPath)
+        console.log('✓ Created 404.html for GitHub Pages SPA support')
+      } catch (err) {
+        console.warn('Failed to create 404.html:', err)
+      }
+    }
+  }
+}
+
 export default defineConfig(({ command }) => {
   const isBuild = command === 'build'
   const branch = getBranch()
   const slug = slugify(branch)
 
   return {
-    plugins: [react(), nodePolyfills({ globals: { Buffer: true }, protocolImports: true })],
+    plugins: [
+      react(),
+      nodePolyfills({ globals: { Buffer: true }, protocolImports: true }),
+      isBuild && create404Plugin()
+    ].filter(Boolean),
     build: { outDir: 'dist' },
     resolve: {
       alias: {

@@ -34,8 +34,6 @@ jobs:
             echo "Folder 'dist' not found. Commit your built assets to dist/." >&2
             exit 1
           fi
-          # SPA fallback (не билд, просто копия)
-          [ -f dist/index.html ] && cp -f dist/index.html dist/404.html || true
 
       # main --> корень gh-pages. ВАЖНО: clean=false, чтобы не снести подпапки других веток.
       - name: Deploy main to root
